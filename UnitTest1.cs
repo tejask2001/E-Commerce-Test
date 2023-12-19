@@ -1,12 +1,13 @@
 using E_Commerce_App.dao;
 using E_Commerce_App.Entity;
+using E_Commerce_App.userException;
 using System.Data.Common;
 
 namespace E_Commerce.Test
 {
     public class Tests
     {
-        private const string connectionString= "Server=TEJAS;Database=E-CommerseApplication;Trusted_Connection=True";
+       // private const string connectionString= "Server=TEJAS;Database=E-CommerseApplication;Trusted_Connection=True";
 
         [Test]
         public void GetAllFromCart()
@@ -63,7 +64,7 @@ namespace E_Commerce.Test
             Dictionary<Products, int> dict = new Dictionary<Products, int>();
 
             customers.CustomerId = 5;
-            product.ProductId = 1;
+            product.ProductId = 3;
             int quantity = 5;
             string shippingAddress = "ABC Test";
             dict.Add(product, quantity);
@@ -74,18 +75,21 @@ namespace E_Commerce.Test
         }
 
         [Test]
-        public void CorrectException()
+        public void CorrectProductException()
         {
             IOrderProcessorRepository repo = new OrderProcessorRepositoryImpl();
+            int productId = 1;                      
+            Assert.Throws<ProductNotFoundException>(() => repo.DeleteProduct(productId));
 
-            int customerId = 3;
-            int productId = 6;
+        }
 
-            var customerExists=repo.CustomerExists(customerId);
-            var productExists=repo.ProductExists(customerId);
+        [Test]
+        public void CorrectCustomerException()
+        {
+            IOrderProcessorRepository repo = new OrderProcessorRepositoryImpl();
+            int customerId = 7;
+            Assert.Throws<ProductNotFoundException>(() => repo.DeleteCustomer(customerId));
 
-            Assert.AreEqual(true, customerExists);
-            Assert.AreEqual(true, productExists);
         }
     }
 }
